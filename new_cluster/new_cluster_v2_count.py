@@ -36,6 +36,7 @@ cluster = np.empty([10000, element_limit], dtype=int)
 
 i = 0
 for i in range(10000):
+
     # 求出最大相关系数
     x = np.max(pc_find)
 
@@ -61,7 +62,10 @@ for i in range(10000):
 
     # 聚类内元素计数，初始为2
     times = 2
+
     while 1:
+
+        # 初始化
         group = 0
 
         # 聚类内元素对应相关系数行相加
