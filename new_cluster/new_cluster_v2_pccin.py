@@ -36,11 +36,11 @@ cluster = np.empty([10000, 1000], dtype=int)
 # 聚类计数
 i = 0
 
+# 求出最大相关系数
+x = np.max(pc_find)
+
 for i in range(10000):
-
-    # 求出最大相关系数
-    x = np.max(pc_find)
-
+    
     # 标记矩阵中无剩余元素，循环跳出，将所有聚类结果输出
     if x == 0:
         cluster = cluster[~(cluster == 0).all(1)]
@@ -52,7 +52,7 @@ for i in range(10000):
         break
 
     # 查找最大相关系数的坐标
-    max_peer = np.where(pc_find == np.max(pc_find))
+    max_peer = np.where(pc_find == x)
 
     # 最大相关系数对写入聚类分组
     cluster[i, 0] = max_peer[0][0]
@@ -106,5 +106,8 @@ for i in range(10000):
             break
         if times >= 1000:
             break
-        if np.max(pc_find) == 0:
+        
+        # 求出最大相关系数，最大值为零则跳出
+        x = np.max(pc_find)
+        if x == 0:
             break
