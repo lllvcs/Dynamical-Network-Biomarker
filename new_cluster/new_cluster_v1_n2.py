@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
-from scipy.special import perm, comb
-import random
+from scipy.special import comb
 import copy
 
 # 数据导入
@@ -71,8 +70,8 @@ for i in range(10000):
         if pcc_ave < 0.9:
             print("break")
             break
-'''
-        if times > 200:
-            print("break")
-            break
-'''
+
+#        if times > 200:
+#            print("break")
+#            break
+
