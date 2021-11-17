@@ -32,6 +32,7 @@ pc_find = np.tril(pc_find)
 
 # 聚类分组初始化，根据情况设置预留空间
 cluster = np.empty([10000, 1000], dtype=int)
+count = len(pc) - 1
 
 # 聚类计数
 i = 0
@@ -40,7 +41,10 @@ i = 0
 x = np.max(pc_find)
 
 for i in range(10000):
-    
+
+    # 求出最大相关系数，最大值为零则跳出
+    x = np.max(pc_find)
+
     # 标记矩阵中无剩余元素，循环跳出，将所有聚类结果输出
     if x == 0:
         cluster = cluster[~(cluster == 0).all(1)]
@@ -97,6 +101,7 @@ for i in range(10000):
 
         # 聚类内元素计数加一
         times = times + 1
+        count = count - 1
 
         # 计算聚类内PCCin均值
         pccin_ave = pccin / comb(times, 2)
@@ -106,8 +111,11 @@ for i in range(10000):
             break
         if times >= 1000:
             break
-        
-        # 求出最大相关系数，最大值为零则跳出
-        x = np.max(pc_find)
-        if x == 0:
+
+        # 检测剩余元素
+        # if len(np.where(pc_find != 0)) == 2:
+        if count == 2:
+            last_two = np.where(pc_find == x)
+            cluster[i, times] = last_two[0][0]
+            cluster[i, times+1] = last_two[1][0]
             break
