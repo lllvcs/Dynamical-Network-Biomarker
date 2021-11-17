@@ -9,7 +9,7 @@ pccin_min = 0.75
 element_limit = 20
 
 # 数据导入
-frame = pd.read_csv('read.csv')
+frame = pd.read_csv('in.csv')
 
 # 删除多余数据
 del frame['symbol']
@@ -32,13 +32,10 @@ pc_find = np.tril(pc_find)
 
 # 聚类分组初始化，根据情况设置预留空间
 cluster = np.empty([10000, 1000], dtype=int)
-count = len(pc) - 1
 
-# 聚类计数
+# 计数
 i = 0
-
-# 求出最大相关系数
-x = np.max(pc_find)
+count = len(pc) - 1
 
 for i in range(10000):
 
@@ -51,7 +48,7 @@ for i in range(10000):
         idx = np.argwhere(np.all(cluster[..., :] == 0, axis=0))
         cluster = np.delete(cluster, idx, axis=1)
 
-        np.savetxt('result.csv', cluster, delimiter=',', fmt='%d')
+        np.savetxt('out.csv', cluster, delimiter=',', fmt='%d')
         print("done!")
         break
 
@@ -106,16 +103,16 @@ for i in range(10000):
         # 计算聚类内PCCin均值
         pccin_ave = pccin / comb(times, 2)
 
-        # 聚类内阈值检测，跳出
-        if pccin_ave < pccin_min and times >= element_limit:
-            break
-        if times >= 1000:
-            break
-
-        # 检测剩余元素
+        # 检测剩余元素，剩余两个直接写入并跳出
         # if len(np.where(pc_find != 0)) == 2:
         if count == 2:
             last_two = np.where(pc_find == x)
             cluster[i, times] = last_two[0][0]
-            cluster[i, times+1] = last_two[1][0]
+            cluster[i, times + 1] = last_two[1][0]
+            break
+
+        # 聚类内阈值检测，跳出
+        if pccin_ave < pccin_min and times >= element_limit:
+            break
+        if times >= 1000:
             break

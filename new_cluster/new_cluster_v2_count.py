@@ -3,11 +3,11 @@ import numpy as np
 import pandas as pd
 import copy
 
-# 聚类内元素阈值
+# 阈值
 element_limit = 250
 
 # 数据导入
-frame = pd.read_csv('read.csv')
+frame = pd.read_csv('in.csv')
 
 # 删除多余数据
 del frame['symbol']
@@ -34,7 +34,10 @@ pc_find = np.tril(pc_find)
 # 聚类分组初始化
 cluster = np.zeros([10000, element_limit], dtype=int)
 
+# 计数
 i = 0
+count = len(pc) - 1
+
 for i in range(10000):
 
     # 求出最大相关系数
@@ -42,11 +45,16 @@ for i in range(10000):
 
     # 标记矩阵中无剩余元素，循环跳出，将所有聚类结果输出
     if x == 0:
-        np.savetxt('result.csv', cluster, delimiter=',', fmt='%d')
+        cluster = cluster[~(cluster == 0).all(1)]
+        idx = np.argwhere(np.all(cluster[..., :] == 0, axis=0))
+        cluster = np.delete(cluster, idx, axis=1)
+
+        np.savetxt('out.csv', cluster, delimiter=',', fmt='%d')
+        print("done!")
         break
 
     # 查找最大相关系数的坐标
-    max_peer = np.where(pc_find == np.max(pc_find))
+    max_peer = np.where(pc_find == x)
 
     # 最大相关系数对写入聚类分组
     cluster[i, 0] = max_peer[0][0]
@@ -86,7 +94,16 @@ for i in range(10000):
 
         # 聚类内元素计数加一
         times = times + 1
+        count = count - 1
 
-        # 聚类内元素达到阈值，跳出
+        # 检测剩余元素
+        # if len(np.where(pc_find != 0)) == 2:
+        if count == 2:
+            last_two = np.where(pc_find == x)
+            cluster[i, times] = last_two[0][0]
+            cluster[i, times + 1] = last_two[1][0]
+            break
+
+        # 检测剩余元素，剩余两个直接写入并跳出
         if times >= element_limit:
             break
