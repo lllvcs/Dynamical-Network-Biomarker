@@ -42,7 +42,7 @@ for iii in range(6):
     del x['cluster']
     del x['symbol']
     del x['num']
-    x = x.to_numpy()
+    x = x.values
 
     # 计算总表格皮尔森相关系数
     pc = np.corrcoef(x)
@@ -50,7 +50,7 @@ for iii in range(6):
 
     dnb_pros = np.array([])
     # 计算DNB
-    for ii in range(1, y.max().cluster + 1):
+    for ii in range(1, int(y.max().cluster + 1)):
         start = y[(y['cluster'] == ii)].min().num
         end = y[(y['cluster'] == ii)].max().num
         pccin = np.triu(pc[start - 1:end, start - 1:end])
