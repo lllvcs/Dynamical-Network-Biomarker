@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import numpy as np
 import pandas as pd
 import copy
@@ -11,9 +12,9 @@ for iii in range(6):
     cluster_result_raw = np.loadtxt(("in" + str(iii + 1) + ".csv"), delimiter=",")
     total = np.sum(cluster_result_raw != 0)
     cluster_done = np.zeros(total + 1, dtype=int)
-
+    cluster_len = len(cluster_result_raw)
     # 整理聚类
-    for i in range(len(cluster_result_raw)):
+    for i in range(cluster_len):
         for j in range(len(cluster_result_raw[0][:])):
             if cluster_result_raw[i][j] == 0:
                 break
@@ -70,9 +71,11 @@ for iii in range(6):
                 i = i + 1
         pccout_ave = pccout / times
         dnb_pros = np.append(dnb_pros, pccin_ave * sdin_ave / pccout_ave)
-
+    
+    # 对各阶段数据进行拼接
     dnb_pros = pd.DataFrame(dnb_pros)
     dnb_pros.columns = [iii + 1]
     dnb = pd.concat([dnb, dnb_pros], axis=1)
 
+# 输出DNB结果
 np.savetxt('out.csv', dnb, delimiter=',')
