@@ -65,7 +65,7 @@ for iii in range(6):
         sdin = 0
         for i in range(start - 1, end):
             sdin = sdin + np.std(x[i, :], ddof=1)
-            sdin_ave = sdin / (end - start + 1)
+        sdin_ave = sdin / (end - start + 1)
         i = 1
         pccout = 0
         times = 5000
