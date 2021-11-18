@@ -2,12 +2,15 @@
 import numpy as np
 import pandas as pd
 import copy
+import sys
+
+num = sys.argv[1]
 
 # 阈值
-element_limit = 250
+element_limit = int(sys.argv[3])
 
 # 数据导入
-frame = pd.read_csv('in.csv')
+frame = pd.read_csv(num+'.csv')
 
 # 删除多余数据
 del frame['symbol']
@@ -38,7 +41,7 @@ cluster = np.zeros([10000, element_limit], dtype=int)
 i = 0
 count = len(pc) - 1
 
-for i in range(10000):
+while 1:
 
     # 求出最大相关系数
     x = np.max(pc_find)
@@ -49,7 +52,7 @@ for i in range(10000):
         idx = np.argwhere(np.all(cluster[..., :] == 0, axis=0))
         cluster = np.delete(cluster, idx, axis=1)
 
-        np.savetxt('out.csv', cluster, delimiter=',', fmt='%d')
+        np.savetxt('result'+num+'.csv', cluster, delimiter=',', fmt='%d')
         print("done!")
         break
 
@@ -107,3 +110,5 @@ for i in range(10000):
         # 检测剩余元素，剩余两个直接写入并跳出
         if times >= element_limit:
             break
+
+    i = i+1
