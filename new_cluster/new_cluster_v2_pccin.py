@@ -11,6 +11,10 @@ num = sys.argv[1]
 pccin_min = float(sys.argv[2])
 element_limit = int(sys.argv[3])
 
+# 预设聚类参数
+cluster_num = int(sys.argv[4])
+cluster_len = int(sys.argv[5])
+
 # 数据导入
 frame = pd.read_csv(num+'.csv')
 
@@ -34,7 +38,8 @@ pc_find = copy.deepcopy(pc)
 pc_find = np.tril(pc_find)
 
 # 聚类分组初始化，根据情况设置预留空间
-cluster = np.empty([10000, 1000], dtype=int)
+# 实例为cluster_num组以内聚类*cluster_len个以内聚类内元素
+cluster = np.empty([cluster_num, cluster_len], dtype=int)
 
 # 计数
 i = 0
@@ -117,7 +122,7 @@ while 1:
         # 聚类内阈值检测，跳出
         if pccin_ave < pccin_min and times >= element_limit:
             break
-        if times >= 1000:
+        if times > cluster_len-1:
             break
 
     i = i+1
