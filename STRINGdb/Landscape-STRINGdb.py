@@ -32,12 +32,15 @@ for i in range(len(string_bool)):
 
 string_bool = (string_bool == 1)
 
+# 各阶段熵数组初始化
+landscape = pd.DataFrame()
+
 # Landscape计算部分
 for j in range(2, 7):
     # 数据导入
     origin_frame = pd.read_csv('1.csv')
     del origin_frame['symbol']
-    append_frame = pd.read_csv(j+'.csv')
+    append_frame = pd.read_csv(str(j)+'.csv')
     del append_frame['symbol']
     append_frame = pd.concat([origin_frame, append_frame], axis=1)
     origin_frame = origin_frame.to_numpy()
@@ -66,12 +69,15 @@ for j in range(2, 7):
     for i in range(len(origin_pc)):
         x = np.where(origin_pc[i] != 0)[0]
         y = np.where(append_pc[i] != 0)[0]
-        entropy = np.abs(np.sum(np.log2(append_pc[i][y]/np.sum(append_pc[i])))/np.log2(len(y)) \
-        - np.sum(np.log2(origin_pc[i][x]/np.sum(origin_pc[i])))/np.log2(len(x)))
+        entropy = np.abs(np.sum(np.log2(append_pc[i][y]/np.sum(append_pc[i])))/np.log2(len(y))
+                         - np.sum(np.log2(origin_pc[i][x]/np.sum(origin_pc[i])))/np.log2(len(x)))
         if str(entropy) == 'nan':
             entropy = 0
         delta_entropy.append(entropy)
+        
+    # 对各阶段数据进行拼接
+    landscape_pros = pd.DataFrame(append_sd * delta_entropy)
+    landscape_pros.columns = [j + 1]
+    landscape = pd.concat([landscape, landscape_pros], axis=1)
 
-    # Landscape输出
-    landscape = append_sd * delta_entropy
-    np.savetxt("landscape"+j+".csv", delta_entropy, delimiter=',', fmt='%s')
+np.savetxt("Landscape-STRING.csv", landscape, delimiter=',', fmt='%s')

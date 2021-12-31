@@ -32,11 +32,14 @@ for i in range(len(string_bool)):
 
 string_bool = (string_bool == 1)
 
+# 各阶段DNB数组初始化
+dnb = pd.DataFrame()
+
 # DNB计算部分
 for j in range(1, 7):
 
     # 数据导入
-    frame = pd.read_csv(j+'.csv')
+    frame = pd.read_csv(str(j)+'.csv')
     del frame['symbol']
     frame = frame.to_numpy()
 
@@ -57,10 +60,9 @@ for j in range(1, 7):
     pc = np.abs(pc)
     # PCC阈值
     pc_bool = (pc >= 0.8)
+    # 根据PCC阈值再次筛选
     string_bool = string_bool * pc_bool
     pc = pc * string_bool
-
-    # 是否再考虑pc的阈值筛选？
 
     # 计算各项PCCin和SDin
     for i in range(len(pc)):
@@ -90,6 +92,9 @@ for j in range(1, 7):
         else:
             pccout.append(pccout_item/count)
 
-    # DNB值计算与输出
-    dnb = pccin*sdin/pccout
-    np.savetxt("dnb"+j+".csv", dnb, delimiter=',', fmt='%s')
+    # 对各阶段数据进行拼接
+    dnb_pros = pd.DataFrame(pccin*sdin/pccout)
+    dnb_pros.columns = [j + 1]
+    dnb = pd.concat([dnb, dnb_pros], axis=1)
+
+np.savetxt("DNB-STRING-PCC.csv", dnb, delimiter=',', fmt='%s')
