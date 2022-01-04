@@ -2,6 +2,9 @@
 import numpy as np
 import pandas as pd
 
+# 参数设定
+string_limit = 700
+
 # STRINGdb转换部分
 # STRINGdb数据库导入
 stringdb = pd.read_csv("link.csv", delimiter=" ")
@@ -9,7 +12,7 @@ stringdb = pd.read_csv("link.csv", delimiter=" ")
 stringdb["protein1"] = stringdb["protein1"].str.slice(start=5)
 stringdb["protein2"] = stringdb["protein2"].str.slice(start=5)
 # 筛选出高等可信度数据
-stringdb = stringdb[stringdb["combined_score"] >= 700]
+stringdb = stringdb[stringdb["combined_score"] >= string_limit]
 # 重新排序
 stringdb = stringdb.reset_index(drop=True)
 
@@ -77,7 +80,9 @@ for j in range(2, 7):
         
     # 对各阶段数据进行拼接
     landscape_pros = pd.DataFrame(append_sd * delta_entropy)
-    landscape_pros.columns = [j + 1]
+    landscape_pros.columns = [j]
     landscape = pd.concat([landscape, landscape_pros], axis=1)
 
-np.savetxt("Landscape-STRING.csv", landscape, delimiter=',', fmt='%s')
+symbol = pd.DataFrame(pd.read_csv('1.csv')["symbol"])
+landscape = pd.concat([symbol, landscape], axis=1)
+landscape.to_csv("Landscape-STRING-"+str(string_limit)+".csv", index=False)

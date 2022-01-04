@@ -59,7 +59,7 @@ while 1:
         idx = np.argwhere(np.all(cluster[..., :] == 0, axis=0))
         cluster = np.delete(cluster, idx, axis=1)
         # 聚类结果输出
-        np.savetxt('result'+num+'.csv', cluster, delimiter=',', fmt='%d')
+        np.savetxt('result'+num+'.csv', cluster, delimiter=',', fmt='%s')
         print("done!")
         break
 

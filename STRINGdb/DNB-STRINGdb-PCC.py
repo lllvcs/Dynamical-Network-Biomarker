@@ -2,6 +2,10 @@
 import numpy as np
 import pandas as pd
 
+# 参数设定
+string_limit = 700
+pcc_limit = 0.5
+
 # STRINGdb转换部分
 # STRINGdb数据库导入
 stringdb = pd.read_csv("link.csv", delimiter=" ")
@@ -9,7 +13,7 @@ stringdb = pd.read_csv("link.csv", delimiter=" ")
 stringdb["protein1"] = stringdb["protein1"].str.slice(start=5)
 stringdb["protein2"] = stringdb["protein2"].str.slice(start=5)
 # 筛选出高等可信度数据
-stringdb = stringdb[stringdb["combined_score"] >= 700]
+stringdb = stringdb[stringdb["combined_score"] >= string_limit]
 # 重新排序
 stringdb = stringdb.reset_index(drop=True)
 
@@ -34,9 +38,10 @@ string_bool = (string_bool == 1)
 
 # 各阶段DNB数组初始化
 dnb = pd.DataFrame()
+range_list = [1,2,4,5,6]
 
 # DNB计算部分
-for j in range(1, 7):
+for j in range_list:
 
     # 数据导入
     frame = pd.read_csv(str(j)+'.csv')
@@ -59,10 +64,10 @@ for j in range(1, 7):
     pc = np.corrcoef(frame)
     pc = np.abs(pc)
     # PCC阈值
-    pc_bool = (pc >= 0.8)
+    pc_bool = (pc >= pcc_limit)
     # 根据PCC阈值再次筛选
-    string_bool = string_bool * pc_bool
-    pc = pc * string_bool
+    pc_bool = string_bool * pc_bool
+    pc = pc * pc_bool
 
     # 计算各项PCCin和SDin
     for i in range(len(pc)):
@@ -94,7 +99,9 @@ for j in range(1, 7):
 
     # 对各阶段数据进行拼接
     dnb_pros = pd.DataFrame(pccin*sdin/pccout)
-    dnb_pros.columns = [j + 1]
+    dnb_pros.columns = [j]
     dnb = pd.concat([dnb, dnb_pros], axis=1)
 
-np.savetxt("DNB-STRING-PCC.csv", dnb, delimiter=',', fmt='%s')
+symbol = pd.DataFrame(pd.read_csv('1.csv')["symbol"])
+dnb = pd.concat([symbol, dnb], axis=1)
+dnb.to_csv("DNB-STRING-"+str(string_limit)+"-PCC-"+str(pcc_limit*1000)+".csv", index=False)
