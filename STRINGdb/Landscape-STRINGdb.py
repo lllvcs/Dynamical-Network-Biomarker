@@ -85,4 +85,5 @@ for j in range(2, 7):
 
 symbol = pd.DataFrame(pd.read_csv('1.csv')["symbol"])
 landscape = pd.concat([symbol, landscape], axis=1)
+landscape = landscape.fillna(0)
 landscape.to_csv("Landscape-STRING-"+str(string_limit)+".csv", index=False)
