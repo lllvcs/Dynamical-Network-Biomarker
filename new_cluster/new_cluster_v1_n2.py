@@ -4,10 +4,10 @@ from scipy.special import comb
 import copy
 
 # 数据导入
-frame1 = pd.read_csv('test.csv')
+frame1 = pd.read_csv("test.csv")
 frame2 = copy.deepcopy(frame1)
 # 删除多余数据
-del frame1['symbol']
+del frame1["symbol"]
 frame1 = frame1.to_numpy()
 
 # 计算总表格皮尔森相关系数

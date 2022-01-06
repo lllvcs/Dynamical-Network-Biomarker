@@ -19,12 +19,12 @@ sdin = []
 dnb_max_item = []
 
 # 数据导入
-frame = pd.read_csv(num+'.csv')
+frame = pd.read_csv(num + ".csv")
 # 构造symbol字典
 dict1 = dict(zip(frame.reset_index().values[:, 0], frame.values[:, 0]))
 
 # 删除多余数据
-del frame['symbol']
+del frame["symbol"]
 frame = frame.to_numpy()
 
 # 计算总表格皮尔森相关系数
@@ -47,11 +47,11 @@ pccin = np.array(pccin)
 sdin = np.array(sdin)
 
 for i in range(len(pc)):
-    pccout_item = (np.sum(pccin[max_item[i]])-pccin[i])/(count_num-1)
+    pccout_item = (np.sum(pccin[max_item[i]]) - pccin[i]) / (count_num - 1)
     pccout.append(pccout_item)
 
 pccout = np.array(pccout)
-dnb = pccin*sdin/pccout
+dnb = pccin * sdin / pccout
 dnb_max_item = dnb.argsort()[::-1][0:output_num]
 dnb_max_item = dnb_max_item.tolist()
 

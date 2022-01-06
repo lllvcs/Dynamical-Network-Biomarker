@@ -10,10 +10,10 @@ num = sys.argv[1]
 element_limit = int(sys.argv[3])
 
 # 数据导入
-frame = pd.read_csv(num+'.csv')
+frame = pd.read_csv(num + ".csv")
 
 # 删除多余数据
-del frame['symbol']
+del frame["symbol"]
 frame = frame.to_numpy()
 
 # 计算总表格皮尔森相关系数
@@ -52,7 +52,7 @@ while 1:
         idx = np.argwhere(np.all(cluster[..., :] == 0, axis=0))
         cluster = np.delete(cluster, idx, axis=1)
 
-        np.savetxt('result'+num+'.csv', cluster, delimiter=',', fmt='%d')
+        np.savetxt("result" + num + ".csv", cluster, delimiter=",", fmt="%d")
         print("done!")
         break
 
@@ -111,4 +111,4 @@ while 1:
         if times >= element_limit:
             break
 
-    i = i+1
+    i = i + 1

@@ -6,13 +6,12 @@ import random
 from scipy.special import comb
 
 dnb = pd.DataFrame()
-range_list = [1,2,4,5,6]
+range_list = [1, 2, 4, 5, 6]
 
 for iii in range_list:
     print(iii)
     # 导入聚类结果的原始数据raw，初始化
-    cluster_result_raw = np.loadtxt(
-        ("in" + str(iii) + ".csv"), delimiter=",")
+    cluster_result_raw = np.loadtxt(("in" + str(iii) + ".csv"), delimiter=",")
     total = np.sum(cluster_result_raw != 0)
     cluster_done = np.zeros(total + 1, dtype=int)
     cluster_len = len(cluster_result_raw)
@@ -30,23 +29,27 @@ for iii in range_list:
 
     # 转换为df类型，方便输出
     cluster_done = pd.DataFrame(cluster_done)
-    cluster_done.columns = ['cluster']
+    cluster_done.columns = ["cluster"]
 
     # 导入原始基因表达量表格
-    origin = pd.read_csv(str(iii) + '.csv')
-    origin.insert(1, 'cluster', cluster_done)
-    origin = origin.sort_values(by=['cluster', 'symbol'])
-    origin.insert(2, 'num', np.linspace(
-        1, total, endpoint=True, num=total, dtype=int))
-    origin.to_csv('cluster'+str(iii)+'.csv',
-                  columns=['symbol', 'cluster'], sep=',', index=False, header=True)
+    origin = pd.read_csv(str(iii) + ".csv")
+    origin.insert(1, "cluster", cluster_done)
+    origin = origin.sort_values(by=["cluster", "symbol"])
+    origin.insert(2, "num", np.linspace(1, total, endpoint=True, num=total, dtype=int))
+    origin.to_csv(
+        "cluster" + str(iii) + ".csv",
+        columns=["symbol", "cluster"],
+        sep=",",
+        index=False,
+        header=True,
+    )
 
     x = copy.deepcopy(origin)
 
     # 删除多余数据
-    del x['cluster']
-    del x['symbol']
-    del x['num']
+    del x["cluster"]
+    del x["symbol"]
+    del x["num"]
     x = x.values
 
     # 计算总表格皮尔森相关系数
@@ -59,9 +62,9 @@ for iii in range_list:
     # 计算DNB
     for ii in range(1, int(origin.max().cluster + 1)):
         # 计算当前聚类起始、结束位置
-        start = origin[(origin['cluster'] == ii)].min().num
-        end = origin[(origin['cluster'] == ii)].max().num
-        pccin = np.triu(pc[start - 1:end, start - 1:end])
+        start = origin[(origin["cluster"] == ii)].min().num
+        end = origin[(origin["cluster"] == ii)].max().num
+        pccin = np.triu(pc[start - 1 : end, start - 1 : end])
         pccin_ave = (np.sum(pccin) - (end - start + 1)) / comb(end - start + 1, 2)
         sdin = 0
         for i in range(start - 1, end):
@@ -76,7 +79,7 @@ for iii in range_list:
             if start <= rand <= end:
                 continue
             else:
-                pccout = pccout + np.sum(pc[rand, start - 1:end]) / (end - start + 1)
+                pccout = pccout + np.sum(pc[rand, start - 1 : end]) / (end - start + 1)
                 i = i + 1
         pccout_ave = pccout / times
         dnb_pros = np.append(dnb_pros, pccin_ave * sdin_ave / pccout_ave)
@@ -87,4 +90,4 @@ for iii in range_list:
     dnb = pd.concat([dnb, dnb_pros], axis=1)
 
 # 输出DNB总结果
-np.savetxt('DNB.csv', dnb, delimiter=',', fmt='%s')
+np.savetxt("DNB.csv", dnb, delimiter=",", fmt="%s")
