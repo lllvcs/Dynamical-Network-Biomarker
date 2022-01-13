@@ -40,7 +40,7 @@ pc_find = np.tril(pc_find)
 
 # 聚类分组初始化，根据情况设置预留空间
 # 实例为cluster_num组以内聚类*cluster_len个以内聚类内元素
-cluster = np.empty([cluster_num, cluster_len], dtype=int)
+cluster = np.zeros([cluster_num, cluster_len], dtype=int)
 
 # 计数
 i = 0
@@ -48,12 +48,8 @@ count = len(pc) - 1
 end_flag = 0
 
 while 1:
-
-    # 求出最大相关系数，最大值为零则跳出
-    x = np.max(pc_find)
-
     # 标记矩阵中无剩余元素，循环跳出，将所有聚类结果输出
-    if x == 0 or end_flag == 1:
+    if end_flag == 1:
         # 删除多余全零行列
         cluster = cluster[~(cluster == 0).all(1)]
         idx = np.argwhere(np.all(cluster[..., :] == 0, axis=0))
@@ -62,6 +58,9 @@ while 1:
         np.savetxt("result" + num + ".csv", cluster, delimiter=",", fmt="%s")
         print("done!")
         break
+
+    # 求出最大相关系数，最大值为零则跳出
+    x = np.max(pc_find)
 
     # 查找最大相关系数的坐标
     max_peer = np.where(pc_find == x)
@@ -86,6 +85,15 @@ while 1:
     while 1:
         # 若无剩余元素，则跳出
         if count == 0:
+            end_flag = 1
+            break
+
+        # 极个别情况，仅剩一个元素的处理
+        if count == 1:
+            if times >= element_limit:
+                cluster[i+1, 0] = np.setdiff1d(range(1, len(pc)-1), cluster)[0]
+            else:
+                cluster[i, times] = np.setdiff1d(range(1, len(pc)-1), cluster)[0]
             end_flag = 1
             break
 
@@ -118,6 +126,15 @@ while 1:
 
         # 计算聚类内PCCin均值
         pccin_ave = pccin / comb(times, 2)
+
+        # 极个别情况，仅剩一个元素的处理
+        if count == 1:
+            if times >= element_limit:
+                cluster[i+1, 0] = np.setdiff1d(range(1, len(pc)-1), cluster)[0]
+            else:
+                cluster[i, times] = np.setdiff1d(range(1, len(pc)-1), cluster)[0]
+            end_flag = 1
+            break
 
         # 聚类内阈值检测，跳出
         if pccin_ave < pccin_min and times >= element_limit:
