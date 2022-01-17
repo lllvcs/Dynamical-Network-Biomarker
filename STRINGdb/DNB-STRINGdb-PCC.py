@@ -60,6 +60,9 @@ for j in range_list:
     for i in range(len(frame)):
         sd.append(np.std(frame[i], ddof=1))
 
+    # 根据数据维度大小可以考虑下面这种计算标准差的方法
+    # sd = np.std(frame, axis=1, ddof=1)
+
     # 计算各项的相关系数
     pc = np.corrcoef(frame)
     pc = np.abs(pc)
