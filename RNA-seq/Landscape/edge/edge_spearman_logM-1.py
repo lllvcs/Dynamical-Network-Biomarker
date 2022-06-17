@@ -1,18 +1,16 @@
 import numpy as np
 import pandas as pd
+import scipy.stats as stats
 import sys
 
-# 读取string阈值
 string_limit = int(sys.argv[1])
 
-# stringlink文件读取
 stringdb = pd.read_csv("../data/link.csv", delimiter=" ")
 stringdb["protein1"] = stringdb["protein1"].str.slice(start=5)
 stringdb["protein2"] = stringdb["protein2"].str.slice(start=5)
 stringdb = stringdb[stringdb["combined_score"] >= string_limit]
 stringdb = stringdb.reset_index(drop=True)
 
-# 构建字典
 dict1 = pd.read_csv("../data/ensp.csv")
 length = len(np.unique(dict1["symbol"].values))
 
@@ -27,12 +25,10 @@ for i in range(len(stringdb)):
 np.fill_diagonal(string_bool,0)
 string_bool = string_bool == 1
 
-# 文件名列表
-namelist = ["h000", "h005", "h012", "h021", "h029", "h036", "h045",
-            "h053", "h060", "h069", "h077", "h084", "h093", "h101", "h108"]
+namelist = ['h000', "h005", "h012", "h021", 'h029', "h036", "h045",
+            "h053", 'h060', "h069", "h077", "h084", 'h093', "h101", "h108"]
 
 
-# 熵计算
 def edge_entropy(pc, p1, p2):
     left_not_zero = np.setdiff1d(np.where(pc[p1] != 0), p2)
     right_not_zero = np.setdiff1d(np.where(pc[p2] != 0), p1)
@@ -59,19 +55,19 @@ def edge_entropy(pc, p1, p2):
     entropy = (left_entropy + right_entropy) / 2
     return entropy
 
-# 原始样本/baseline计算
+
 origin_frame = pd.read_csv('../data/hbaseline.csv')
 del origin_frame["symbol"]
 origin_frame = origin_frame.to_numpy()
 origin_sd = np.std(origin_frame, ddof=1, axis=1)
-origin_pc = np.corrcoef(origin_frame)
+origin_pc = stats.spearmanr(origin_frame, axis=1).correlation
 origin_pc = np.abs(origin_pc)
 origin_pc = origin_pc * string_bool
 
-# 原始样本/baseline边计算
 edge_origin_list = []
 edge_origin_entropy = []
 edge_origin_sd = []
+# node1 node2 entropy sd
 num = len(origin_frame)
 for i in range(num):
     for j in range(i-1):
@@ -83,7 +79,6 @@ edge_origin_list = np.array(edge_origin_list)
 edge_origin_entropy = np.array(edge_origin_entropy)
 edge_origin_sd = np.array(edge_origin_sd)
 
-# 多样本计算
 landscape = pd.DataFrame()
 for k in namelist:
     print(k, end="\n")
@@ -95,13 +90,14 @@ for k in namelist:
     origin_frame = origin_frame.to_numpy()
     append_frame = append_frame.to_numpy()
 
-    append_pc = np.corrcoef(append_frame)
+    append_pc = stats.spearmanr(append_frame, axis=1).correlation
     append_pc = np.abs(append_pc)
     append_pc = append_pc * string_bool
     append_sd = np.std(append_frame, ddof=1, axis=1)
     
     edge_append_entropy = []
     edge_append_sd = []
+    # node1 node2 entropy sd
     for i in range(num):
         for j in range(i-1):
             if string_bool[i, j] != 0:

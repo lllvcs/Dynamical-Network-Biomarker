@@ -24,9 +24,7 @@ for i in range(len(stringdb)):
     if (stringdb["protein1"][i] in d) & (stringdb["protein2"][i] in d):
         string_bool[d[stringdb["protein1"][i]], d[stringdb["protein2"][i]]] = 1
 
-for i in range(len(string_bool)):
-    string_bool[i, i] = 0
-
+np.fill_diagonal(string_bool,0)
 string_bool = string_bool == 1
 
 # 文件名列表
