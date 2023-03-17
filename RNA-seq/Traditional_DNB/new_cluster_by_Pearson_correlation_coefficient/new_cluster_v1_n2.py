@@ -1,7 +1,8 @@
+import copy
+
 import numpy as np
 import pandas as pd
 from scipy.special import comb
-import copy
 
 # 数据导入
 frame1 = pd.read_csv("test.csv")
@@ -74,4 +75,3 @@ for i in range(10000):
 #        if times > 200:
 #            print("break")
 #            break
-

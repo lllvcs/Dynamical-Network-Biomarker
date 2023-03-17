@@ -1,8 +1,9 @@
 # Copyright © 2021 LVCS. All Rights Reserved
-import numpy as np
-import pandas as pd
 import copy
 import sys
+
+import numpy as np
+import pandas as pd
 
 num = sys.argv[1]
 
@@ -42,7 +43,6 @@ i = 0
 count = len(pc) - 1
 
 while 1:
-
     # 求出最大相关系数
     x = np.max(pc_find)
 
@@ -75,7 +75,6 @@ while 1:
     times = 2
 
     while 1:
-
         # 初始化
         group = 0
 

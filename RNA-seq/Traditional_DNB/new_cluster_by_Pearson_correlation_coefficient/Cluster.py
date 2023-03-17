@@ -1,9 +1,10 @@
 # Copyright © 2021 LVCS. All Rights Reserved
+import copy
+import sys
+
 import numpy as np
 import pandas as pd
 from scipy.special import comb
-import copy
-import sys
 
 # 文件号
 num = str(sys.argv[1])
@@ -91,9 +92,13 @@ while 1:
         # 极个别情况，仅剩一个元素的处理
         if count == 1:
             if times >= element_limit:
-                cluster[i+1, 0] = np.setdiff1d(range(1, len(pc)-1), cluster)[0]
+                cluster[i + 1, 0] = np.setdiff1d(range(1,
+                                                       len(pc) - 1),
+                                                 cluster)[0]
             else:
-                cluster[i, times] = np.setdiff1d(range(1, len(pc)-1), cluster)[0]
+                cluster[i, times] = np.setdiff1d(range(1,
+                                                       len(pc) - 1),
+                                                 cluster)[0]
             end_flag = 1
             break
 
@@ -130,9 +135,13 @@ while 1:
         # 极个别情况，仅剩一个元素的处理
         if count == 1:
             if times >= element_limit:
-                cluster[i+1, 0] = np.setdiff1d(range(1, len(pc)-1), cluster)[0]
+                cluster[i + 1, 0] = np.setdiff1d(range(1,
+                                                       len(pc) - 1),
+                                                 cluster)[0]
             else:
-                cluster[i, times] = np.setdiff1d(range(1, len(pc)-1), cluster)[0]
+                cluster[i, times] = np.setdiff1d(range(1,
+                                                       len(pc) - 1),
+                                                 cluster)[0]
             end_flag = 1
             break
 

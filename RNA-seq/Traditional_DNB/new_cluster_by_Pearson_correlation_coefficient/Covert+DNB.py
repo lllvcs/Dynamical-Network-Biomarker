@@ -1,8 +1,9 @@
 # Copyright © 2021 LVCS. All Rights Reserved
-import numpy as np
-import pandas as pd
 import copy
 import random
+
+import numpy as np
+import pandas as pd
 from scipy.special import comb
 
 dnb = pd.DataFrame()
@@ -35,7 +36,8 @@ for iii in range_list:
     origin = pd.read_csv(str(iii) + ".csv")
     origin.insert(1, "cluster", cluster_done)
     origin = origin.sort_values(by=["cluster", "symbol"])
-    origin.insert(2, "num", np.linspace(1, total, endpoint=True, num=total, dtype=int))
+    origin.insert(2, "num",
+                  np.linspace(1, total, endpoint=True, num=total, dtype=int))
     origin.to_csv(
         "cluster" + str(iii) + ".csv",
         columns=["symbol", "cluster"],
@@ -64,8 +66,9 @@ for iii in range_list:
         # 计算当前聚类起始、结束位置
         start = origin[(origin["cluster"] == ii)].min().num
         end = origin[(origin["cluster"] == ii)].max().num
-        pccin = np.triu(pc[start - 1 : end, start - 1 : end])
-        pccin_ave = (np.sum(pccin) - (end - start + 1)) / comb(end - start + 1, 2)
+        pccin = np.triu(pc[start - 1:end, start - 1:end])
+        pccin_ave = (np.sum(pccin) -
+                     (end - start + 1)) / comb(end - start + 1, 2)
         sdin = 0
         for i in range(start - 1, end):
             sdin = sdin + np.std(x[i, :], ddof=1)
@@ -79,7 +82,8 @@ for iii in range_list:
             if start <= rand <= end:
                 continue
             else:
-                pccout = pccout + np.sum(pc[rand, start - 1 : end]) / (end - start + 1)
+                pccout = pccout + np.sum(pc[rand,
+                                            start - 1:end]) / (end - start + 1)
                 i = i + 1
         pccout_ave = pccout / times
         dnb_pros = np.append(dnb_pros, pccin_ave * sdin_ave / pccout_ave)
