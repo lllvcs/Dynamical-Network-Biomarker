@@ -74,9 +74,9 @@ for j in range_list:
         x = np.where(item != 0)[0]
         y = np.where(append_pc[i] != 0)[0]
         entropy = np.abs(
-            np.sum(np.log2(append_pc[i][y] / np.sum(append_pc[i]))) / np.log2(len(y))
-            - np.sum(np.log2(item[x] / np.sum(item))) / np.log2(len(x))
-        )
+            np.sum(np.log2(append_pc[i][y] / np.sum(append_pc[i]))) /
+            np.log2(len(y)) -
+            np.sum(np.log2(item[x] / np.sum(item))) / np.log2(len(x)))
         if str(entropy) == "nan":
             entropy = 0
         delta_entropy.append(entropy)

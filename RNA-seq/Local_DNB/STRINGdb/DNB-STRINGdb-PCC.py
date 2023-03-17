@@ -42,7 +42,6 @@ range_list = [1, 2, 4, 5, 6]
 
 # DNB计算部分
 for j in range_list:
-
     # 数据导入
     frame = pd.read_csv(str(j) + ".csv")
     del frame["symbol"]
@@ -109,6 +108,7 @@ symbol = pd.DataFrame(pd.read_csv("1.csv")["symbol"])
 dnb = pd.concat([symbol, dnb], axis=1)
 dnb = dnb.fillna(0)
 dnb.to_csv(
-    "DNB-STRING-" + str(string_limit) + "-PCC-" + str(pcc_limit * 1000) + ".csv",
+    "DNB-STRING-" + str(string_limit) + "-PCC-" + str(pcc_limit * 1000) +
+    ".csv",
     index=False,
 )
