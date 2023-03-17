@@ -41,7 +41,6 @@ range_list = [1, 2, 4, 5, 6]
 
 # DNB计算部分
 for j in range_list:
-
     # 数据导入
     frame = pd.read_csv(str(j) + ".csv")
     del frame["symbol"]
@@ -56,8 +55,8 @@ for j in range_list:
 
     # 计算各项的标准差
     sd = []
-    for i in range(len(frame)):
-        sd.append(np.std(frame[i], ddof=1))
+    for i, item in enumerate(frame):
+        sd.append(np.std(item, ddof=1))
 
     # 计算各项的相关系数
     pc = np.corrcoef(frame)
@@ -79,8 +78,8 @@ for j in range_list:
     sdin = np.array(sdin)
 
     # 计算各项PCCout
-    for i in range(len(pc)):
-        x = np.where(pc[i] != 0)[0]
+    for i, item in enumerate(pc):
+        x = np.where(item != 0)[0]
         count = 0
         pccout_item = 0
         for ii in x:

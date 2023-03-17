@@ -1,7 +1,8 @@
+import sys
+
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
-import sys
 
 string_limit = int(sys.argv[1])
 
@@ -22,7 +23,7 @@ for i in range(len(stringdb)):
     if (stringdb["protein1"][i] in d) & (stringdb["protein2"][i] in d):
         string_bool[d[stringdb["protein1"][i]], d[stringdb["protein2"][i]]] = 1
 
-np.fill_diagonal(string_bool,0)
+np.fill_diagonal(string_bool, 0)
 string_bool = string_bool == 1
 
 
@@ -35,25 +36,33 @@ def edge_entropy(pc, p1, p2):
     if len_left_not_zero < 2 and len_right_not_zero < 2:
         return 0
     if len_left_not_zero < 2 and len_right_not_zero > 1:
-        right_prob = (abs(pc[p2][right_not_zero])) / np.sum(abs(pc[p2][right_not_zero]))
-        right_entropy = -np.sum(right_prob * np.log2(right_prob)) / np.log2(len_right_not_zero)
+        right_prob = (abs(pc[p2][right_not_zero])) / np.sum(
+            abs(pc[p2][right_not_zero]))
+        right_entropy = -np.sum(
+            right_prob * np.log2(right_prob)) / np.log2(len_right_not_zero)
         entropy = right_entropy / 2
         return entropy
     if len_left_not_zero > 1 and len_right_not_zero < 2:
-        left_prob = (abs(pc[p1][left_not_zero])) / np.sum(abs(pc[p1][left_not_zero]))
-        left_entropy = -np.sum(left_prob * np.log2(left_prob)) / np.log2(len_left_not_zero)
+        left_prob = (abs(pc[p1][left_not_zero])) / np.sum(
+            abs(pc[p1][left_not_zero]))
+        left_entropy = -np.sum(
+            left_prob * np.log2(left_prob)) / np.log2(len_left_not_zero)
         entropy = left_entropy / 2
         return entropy
 
-    left_prob = (abs(pc[p1][left_not_zero])) / np.sum(abs(pc[p1][left_not_zero]))
-    right_prob = (abs(pc[p2][right_not_zero])) / np.sum(abs(pc[p2][right_not_zero]))
-    left_entropy = -np.sum(left_prob * np.log2(left_prob)) / np.log2(len_left_not_zero)
-    right_entropy = -np.sum(right_prob * np.log2(right_prob)) / np.log2(len_right_not_zero)
+    left_prob = (abs(pc[p1][left_not_zero])) / np.sum(
+        abs(pc[p1][left_not_zero]))
+    right_prob = (abs(pc[p2][right_not_zero])) / np.sum(
+        abs(pc[p2][right_not_zero]))
+    left_entropy = -np.sum(
+        left_prob * np.log2(left_prob)) / np.log2(len_left_not_zero)
+    right_entropy = -np.sum(
+        right_prob * np.log2(right_prob)) / np.log2(len_right_not_zero)
     entropy = (left_entropy + right_entropy) / 2
     return entropy
 
 
-origin_frame = pd.read_csv('../data/hbaseline.csv')
+origin_frame = pd.read_csv("../data/hbaseline.csv")
 del origin_frame["symbol"]
 origin_frame = origin_frame.to_numpy()
 origin_sd = np.std(origin_frame, ddof=1, axis=1)
@@ -82,9 +91,11 @@ single_sample = pd.read_csv("../data/exprSet_new.csv", index_col=0)
 num_sample = single_sample.columns
 num_gene = len(single_sample.iloc[:, 0])
 
-for k in range(len(num_sample)):
+for k, item in enumerate(num_sample):
     print(k, end="\n")
-    new = np.hstack((origin_frame, np.reshape(single_sample.iloc[:, k].values, (num_gene, 1))))
+    new = np.hstack((origin_frame,
+                     np.reshape(single_sample.iloc[:, k].values,
+                                (num_gene, 1))))
 
     new_pc = stats.spearmanr(new, axis=1).correlation
     new_pc = np.abs(new_pc)
@@ -106,9 +117,14 @@ for k in range(len(num_sample)):
     edge_append_sd = np.abs(edge_append_sd - edge_origin_sd)
 
     landscape_pros = pd.DataFrame(edge_append_sd * edge_append_entropy)
-    landscape_pros.columns = [num_sample[k]]
+    landscape_pros.columns = [item]
     landscape = pd.concat([landscape, landscape_pros], axis=1)
 
-landscape = pd.concat([pd.DataFrame(edge_origin_list, columns=['node1', 'node2']), landscape], axis=1)
+landscape = pd.concat(
+    [pd.DataFrame(edge_origin_list, columns=["node1", "node2"]), landscape],
+    axis=1)
 landscape = landscape.fillna(0)
-landscape.to_csv("edge_singlesample_entropy_spearman_logM-1_" + str(string_limit) + ".csv", index=False)
+landscape.to_csv(
+    "edge_singlesample_entropy_spearman_logM-1_" + str(string_limit) + ".csv",
+    index=False,
+)

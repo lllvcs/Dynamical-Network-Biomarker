@@ -53,8 +53,8 @@ for j in range_list:
     # 标准差计算
     origin_sd = []
     append_sd = []
-    for i in range(len(origin_frame)):
-        origin_sd.append(np.std(origin_frame[i], ddof=1))
+    for i, item in enumerate(origin_frame):
+        origin_sd.append(np.std(item, ddof=1))
         append_sd.append(np.std(append_frame[i], ddof=1))
     origin_sd = np.array(origin_sd)
     append_sd = np.array(append_sd)
@@ -70,13 +70,13 @@ for j in range_list:
 
     # 熵计算
     delta_entropy = []
-    for i in range(len(origin_pc)):
-        x = np.where(origin_pc[i] != 0)[0]
+    for i, item in enumerate(origin_pc):
+        x = np.where(item != 0)[0]
         y = np.where(append_pc[i] != 0)[0]
         entropy = np.abs(
-            np.sum(np.log2(append_pc[i][y] / np.sum(append_pc[i]))) / np.log2(len(y))
-            - np.sum(np.log2(origin_pc[i][x] / np.sum(origin_pc[i]))) / np.log2(len(x))
-        )
+            np.sum(np.log2(append_pc[i][y] / np.sum(append_pc[i]))) /
+            np.log2(len(y)) -
+            np.sum(np.log2(item[x] / np.sum(item))) / np.log2(len(x)))
         if str(entropy) == "nan":
             entropy = 0
         delta_entropy.append(entropy)
