@@ -36,10 +36,10 @@ for i in range(len(pc)):
     pc[i, i] = 0
 
 # 找到每项前*个最大相关项
-for i in range(len(pc)):
-    max_item.append(heapq.nlargest(count_num, range(len(pc[i])), pc[i].take))
-    pccin_item = np.sum(pc[i, max_item[i]])
-    sdin_item = np.std(pc[i, max_item[i]], ddof=1)
+for i, item in enumerate(pc):
+    max_item.append(heapq.nlargest(count_num, range(len(item)), item.take))
+    pccin_item = np.sum(item)
+    sdin_item = np.std(item, ddof=1)
     pccin.append(pccin_item)
     sdin.append(sdin_item)
 

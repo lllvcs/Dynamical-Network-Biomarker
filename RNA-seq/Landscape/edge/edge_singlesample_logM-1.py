@@ -85,7 +85,7 @@ single_sample = pd.read_csv("../data/exprSet_new.csv", index_col=0)
 num_sample = single_sample.columns
 num_gene = len(single_sample.iloc[:, 0])
 
-for k in range(len(num_sample)):
+for k, item in enumerate(num_sample):
     print(k, end="\n")
     new = np.hstack((origin_frame, np.reshape(single_sample.iloc[:, k].values, (num_gene, 1))))
 
@@ -109,7 +109,7 @@ for k in range(len(num_sample)):
     edge_append_sd = np.abs(edge_append_sd - edge_origin_sd)
 
     landscape_pros = pd.DataFrame(edge_append_sd * edge_append_entropy)
-    landscape_pros.columns = [num_sample[k]]
+    landscape_pros.columns = [item]
     landscape = pd.concat([landscape, landscape_pros], axis=1)
 
 landscape = pd.concat([pd.DataFrame(edge_origin_list, columns=['node1', 'node2']), landscape], axis=1)

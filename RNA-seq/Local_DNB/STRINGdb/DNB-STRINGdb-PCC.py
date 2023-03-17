@@ -57,8 +57,8 @@ for j in range_list:
 
     # 计算各项的标准差
     sd = []
-    for i in range(len(frame)):
-        sd.append(np.std(frame[i], ddof=1))
+    for i, item in enumerate(frame):
+        sd.append(np.std(item, ddof=1))
 
     # 根据数据维度大小可以考虑下面这种计算标准差的方法
     # sd = np.std(frame, axis=1, ddof=1)
@@ -87,8 +87,8 @@ for j in range_list:
     sdin = np.array(sdin)
 
     # 计算各项PCCout
-    for i in range(len(pc)):
-        x = np.where(pc[i] != 0)[0]
+    for i, item in enumerate(pc):
+        x = np.where(item != 0)[0]
         count = 0
         pccout_item = 0
         for ii in x:
