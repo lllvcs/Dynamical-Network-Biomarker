@@ -108,7 +108,6 @@ symbol = pd.DataFrame(pd.read_csv("1.csv")["symbol"])
 dnb = pd.concat([symbol, dnb], axis=1)
 dnb = dnb.fillna(0)
 dnb.to_csv(
-    "DNB-STRING-" + str(string_limit) + "-PCC-" + str(pcc_limit * 1000) +
-    ".csv",
+    "DNB-STRING-" + str(string_limit) + "-PCC-" + str(pcc_limit * 1000) + ".csv",
     index=False,
 )
