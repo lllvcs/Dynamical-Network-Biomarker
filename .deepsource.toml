@@ -8,12 +8,3 @@ name = "python"
 
 [[transformers]]
 name = "black"
-
-[[transformers]]
-name = "autopep8"
-
-[[transformers]]
-name = "yapf"
-
-[[transformers]]
-name = "isort"
