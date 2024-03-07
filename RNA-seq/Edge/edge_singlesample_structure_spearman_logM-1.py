@@ -36,32 +36,30 @@ def edge_structure_entropy(data, pc, p1, p2):
     if len_left_not_zero < 2 and len_right_not_zero < 2:
         return 0
     if len_left_not_zero < 2 and len_right_not_zero > 1:
-        right_prob = (abs(pc[p2][right_not_zero])) / np.sum(
-            abs(pc[p2][right_not_zero]))
+        right_prob = (abs(pc[p2][right_not_zero])) / np.sum(abs(pc[p2][right_not_zero]))
         right_entropy = -np.sum(
-            np.average(data[right_not_zero, :], axis=1) * right_prob *
-            np.log2(right_prob)) / np.log2(len_right_not_zero)
+            np.average(data[right_not_zero, :], axis=1)
+            * right_prob
+            * np.log2(right_prob)
+        ) / np.log2(len_right_not_zero)
         entropy = right_entropy / 2
         return entropy
     if len_left_not_zero > 1 and len_right_not_zero < 2:
-        left_prob = (abs(pc[p1][left_not_zero])) / np.sum(
-            abs(pc[p1][left_not_zero]))
+        left_prob = (abs(pc[p1][left_not_zero])) / np.sum(abs(pc[p1][left_not_zero]))
         left_entropy = -np.sum(
-            np.average(data[left_not_zero, :], axis=1) * left_prob *
-            np.log2(left_prob)) / np.log2(len_left_not_zero)
+            np.average(data[left_not_zero, :], axis=1) * left_prob * np.log2(left_prob)
+        ) / np.log2(len_left_not_zero)
         entropy = left_entropy / 2
         return entropy
 
-    left_prob = (abs(pc[p1][left_not_zero])) / np.sum(
-        abs(pc[p1][left_not_zero]))
-    right_prob = (abs(pc[p2][right_not_zero])) / np.sum(
-        abs(pc[p2][right_not_zero]))
+    left_prob = (abs(pc[p1][left_not_zero])) / np.sum(abs(pc[p1][left_not_zero]))
+    right_prob = (abs(pc[p2][right_not_zero])) / np.sum(abs(pc[p2][right_not_zero]))
     left_entropy = -np.sum(
-        np.average(data[left_not_zero, :], axis=1) * left_prob *
-        np.log2(left_prob)) / np.log2(len_left_not_zero)
+        np.average(data[left_not_zero, :], axis=1) * left_prob * np.log2(left_prob)
+    ) / np.log2(len_left_not_zero)
     right_entropy = -np.sum(
-        np.average(data[right_not_zero, :], axis=1) * right_prob *
-        np.log2(right_prob)) / np.log2(len_right_not_zero)
+        np.average(data[right_not_zero, :], axis=1) * right_prob * np.log2(right_prob)
+    ) / np.log2(len_right_not_zero)
     entropy = (left_entropy + right_entropy) / 2
     return entropy
 
@@ -84,7 +82,8 @@ for i in range(num):
         if string_bool[i, j] != 0:
             edge_origin_list.append([d2[i], d2[j]])
             edge_origin_entropy.append(
-                edge_structure_entropy(origin_frame, origin_pc, i, j))
+                edge_structure_entropy(origin_frame, origin_pc, i, j)
+            )
             edge_origin_sd.append((origin_sd[i] + origin_sd[j]) / 2)
 edge_origin_list = np.array(edge_origin_list)
 edge_origin_entropy = np.array(edge_origin_entropy)
@@ -98,9 +97,9 @@ num_gene = len(single_sample.iloc[:, 0])
 
 for k, item in enumerate(num_sample):
     print(k, end="\n")
-    new = np.hstack((origin_frame,
-                     np.reshape(single_sample.iloc[:, k].values,
-                                (num_gene, 1))))
+    new = np.hstack(
+        (origin_frame, np.reshape(single_sample.iloc[:, k].values, (num_gene, 1)))
+    )
 
     new_pc = stats.spearmanr(new, axis=1).correlation
     new_pc = np.abs(new_pc)
@@ -114,8 +113,7 @@ for k, item in enumerate(num_sample):
         for j in range(i - 1):
             if string_bool[i, j] != 0:
                 edge_append_sd.append(np.abs((new_sd[i] + new_sd[j]) / 2))
-                edge_append_entropy.append(
-                    edge_structure_entropy(new, new_pc, i, j))
+                edge_append_entropy.append(edge_structure_entropy(new, new_pc, i, j))
 
     edge_append_entropy = np.array(edge_append_entropy)
     edge_append_entropy = np.abs(edge_append_entropy - edge_origin_entropy)
@@ -127,11 +125,10 @@ for k, item in enumerate(num_sample):
     landscape = pd.concat([landscape, landscape_pros], axis=1)
 
 landscape = pd.concat(
-    [pd.DataFrame(edge_origin_list, columns=["node1", "node2"]), landscape],
-    axis=1)
+    [pd.DataFrame(edge_origin_list, columns=["node1", "node2"]), landscape], axis=1
+)
 landscape = landscape.fillna(0)
 landscape.to_csv(
-    "edge_singlesample_structure_entropy_spearman_logM-1_" +
-    str(string_limit) + ".csv",
+    "edge_singlesample_structure_entropy_spearman_logM-1_" + str(string_limit) + ".csv",
     index=False,
 )
